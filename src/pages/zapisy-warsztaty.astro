@@ -127,8 +127,13 @@ import "../styles/m3-form.css";
   }
 
   function renderSlots(groups, interest) {
-    var html = '', now = today();
+    var html = '', pastHtml = '', now = today();
     groups.forEach(function (g) {
+      // Terminy z przeszłości: jedna blada linijka na końcu listy, żeby nie zasłaniały aktualnych.
+      if (g.date < now) {
+        pastHtml += '<div class="m3-slot past">' + esc(g.label) + (g.place ? ' · ' + esc(g.place) : '') + ' · odbyło się</div>';
+        return;
+      }
       var cls = 'm3-slot', info;
       if (!g.open) {
         cls += ' planned';
@@ -140,7 +145,7 @@ import "../styles/m3-form.css";
         + (g.place ? '<span>' + esc(g.place) + '</span>' : '')
         + (g.open ? info : '<span>' + info + '</span>') + '</div>';
     });
-    $('pp-slots').innerHTML = html;
+    $('pp-slots').innerHTML = html + pastHtml;
   }
 
   function load() {
